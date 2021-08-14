@@ -1,0 +1,923 @@
+\DeclareUnicodeCharacter{2212}{-}
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{report}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+\date{}
+
+\begin{document}
+
+\hypertarget{objectives}{%
+  \section{Objectives}\label{objectives}}
+
+\begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+        Determine the vapour-liquid equilibrium data for the acetone (A)
+        benzene (B) homogeneous mixture
+  \item
+        Check the thermodynamic consistency of the data using the Gibbs Duhem
+        Equation
+  \item
+        Present the thermodynamic characteristics and constants of Van-Laar
+        equation for the system
+\end{enumerate}
+
+\hypertarget{procedure}{%
+  \section{Procedure}\label{procedure}}
+
+\begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+        Prepare 9 solutions of acetone and benzene having different volume
+        fraction of acetone.
+  \item
+        Measure the refractive index of the solutions using a refractometer,
+        take three readings for each solution of acetone and benzene.
+  \item
+        Now prepare a solution by adding approximately 480 ml of acetone and
+        120 ml of benzene so that the solution level is same as the level of
+        cotrell pump.
+  \item
+        Now pour the solution in the still and put the voltage value to 120V
+        and wait for it to reach a steady temperature.
+  \item
+        Put the voltage value to 80-85V when it starts boiling.
+  \item
+        Dispose off the liquid and vapor solution collected by cotrell pump
+        and condenser i.e purge the obtained liquid and vapor solution once..
+  \item
+        Collect the liquid and vapour solution and put the voltage value to
+        zero and measure their refractive index.
+  \item
+        Remove some amount of solution from the still and add some benzene to
+        it and set the voltage value to 120 and then repeat step 5, 6.
+  \item
+        Take four such readings by removing some amount of the solution and
+        adding the same amount of the benzene to it every time.
+\end{enumerate}
+
+\hypertarget{set-up-assembly}{%
+  \section{Set-Up Assembly}\label{set-up-assembly}}
+
+\begin{center}
+  \adjustimage{max size={0.3\linewidth}{0.3\paperheight}}{apparatus.png}
+\end{center}
+\pagebreak
+
+\hypertarget{results}{%
+  \section{Results}\label{results}}
+
+\hypertarget{raw-data}{%
+  \subsection{Raw Data}\label{raw-data}}
+
+\textbf{Table 1: Properties of Components}
+
+\begin{center}
+  \adjustimage{max size={0.7\linewidth}{0.7\paperheight}}{table1.png}
+\end{center}
+
+\textbf{Table 2: Calibration Curve Data}
+
+\begin{center}
+  \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{table2.png}
+\end{center}
+
+\textbf{Table 3: Experimental Data}
+
+\begin{center}
+  \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{table3.png}
+\end{center}
+
+\pagebreak
+\hypertarget{derived-data}{%
+  \subsection{Derived Data}\label{derived-data}}
+
+\hypertarget{mol-fraction-from-vol-fraction}{%
+  \subsubsection{Mol Fraction from Vol
+    Fraction}\label{mol-fraction-from-vol-fraction}}
+
+We calculated the mole fractions from the volume ratios as follows:
+
+\begin{equation}
+  \begin{split}
+    \frac{V_A}{V_B}&=\beta \:\:\:(\rm say)\\
+    \frac{m_A/\rho_A}{m_B/\rho_B}&=\beta\\
+    \frac{m_A}{m_B}&=\beta\frac{\rho_A}{\rho_B}\\
+    \frac{n_AM_A}{n_BM_B}&=\beta\frac{\rho_A}{\rho_B}\\
+    \frac{n_A}{n_B}&=\beta\frac{\rho_A}{\rho_B}\frac{M_B}{M_A}\\
+    \implies n_B&=\frac{\rho_BM_A}{\beta\rho_AM_B}n_A\\
+    \because x_A&=\frac{n_A}{n_A+n_B},\:\:\rm we\: get:\\
+    x_A = \frac{n_A}{n_A+\frac{\rho_BM_A}{\beta\rho_AM_B}n_A}&=\frac{\beta\rho_AM_B}{\beta\rho_AM_B+\rho_BM_A}
+  \end{split}
+\end{equation}
+
+For the first value of \(\beta=9\), the above formula yielded
+\(x_A=0.909\). The \emph{average} refractive index (RI) was plotted
+against \(x_A\) and a linear regression was carried out.
+
+\textbf{Table 4: Mole fraction calculated from linear regression}
+
+\begin{center}
+  \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{table4.png}
+\end{center}
+
+\hypertarget{saturation-pressure-from-antoines-equation}{%
+  \subsubsection{Saturation Pressure from Antoine's
+    Equation:}\label{saturation-pressure-from-antoines-equation}}
+
+The form of Antoine's equation obtained from Smith and Van-Ness is as
+follows:
+
+\begin{equation}
+  \ln{P^{sat}}(kPa)=A-\frac{B}{T(^{\circ}C)+C}
+\end{equation}
+
+The constants for A (acetone) are: A = 14.3145; B = 2756.22; C =228.060
+while for B (benzene) they are: A = 13.7819; B = 2726.81; C = 217.572
+
+\hypertarget{activity-coefficient-from-modified-raoults-law}{%
+  \subsubsection{Activity Coefficient from Modified Raoult's
+    Law:}\label{activity-coefficient-from-modified-raoults-law}}
+
+The statement of the Modified Raoult's Law reads:
+
+\begin{equation}
+  \begin{split}
+    x_A\gamma_AP_A^{sat}&=y_A\pi_A\\
+    \implies \gamma_A&=\frac{y_A\pi_A}{x_AP_A^{sat}}
+  \end{split}
+\end{equation}
+
+\textbf{Table 5: Activity Coefficient and Saturation Pressure}
+
+\begin{center}
+  \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{table5.png}
+\end{center}
+
+\hypertarget{van-laar-constants-from-data}{%
+  \subsubsection{Van-Laar Constants from
+    Data:}\label{van-laar-constants-from-data}}
+
+The Van-Laar constants are given by:
+
+\begin{equation}
+  \begin{split}
+    a&=\log{\gamma_A}\left[1+\frac{x_B\log{\gamma_B}}{x_A\log{\gamma_A}}\right]^2\\
+    b&=\log{\gamma_B}\left[1+\frac{x_A\log{\gamma_A}}{x_B\log{\gamma_B}}\right]^2
+  \end{split}
+\end{equation}
+
+\textbf{Table 6: Calculation of excess Gibbs free energy}
+
+\begin{center}
+  \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{table6.png}
+\end{center}
+\pagebreak
+
+\hypertarget{observations}{%
+  \section{Observations:}\label{observations}}
+
+\begin{itemize}
+  \tightlist
+  \item
+        The refractive index of the mixture shows a linear relation with the
+        volume (and thus mole) fraction of acetone. As the mol fraction of
+        acetone decreases, the refractive index increases.
+  \item
+        As the mole fraction of acetone (more volatile component) decreases,
+        the VLE temperature increases.
+\end{itemize}
+
+\hypertarget{hypothesis-conclusion}{%
+  \section{Hypothesis \& Conclusion:}\label{hypothesis-conclusion}}
+
+One hypothesis made at the start was that data follows thermodynamic
+consistency. The way to check that is by the integral test (Gibb's-Duhem
+Equation):
+
+\begin{equation}
+  \int_{0}^{1}\ln{\frac{\gamma_A}{\gamma_B}}dx_a=0
+\end{equation}
+
+To that extent, \(\ln{(\gamma_a/\gamma_b)}\) v/s \(x_a\) was plotted and
+the area bound was measured. The value deviated from 0 and thus,
+thermodynmic consistency is \textbf{not} followed.
+
+\emph{Some part might be because of experimental error, and it could be
+  rectified by taking more data points.}
+
+Another aim was to calculate the Van-Laar constants. For experiment run
+(ie each VLE established), the constants were calculated using the
+formulae mentioned above. The values came out as:
+
+\textbf{Table 7: Van-Laar Constants calculated from data}
+
+\begin{center}
+  \adjustimage{max size={0.6\linewidth}{0.6\paperheight}}{table7.png}
+\end{center}
+
+It is expected that the Van-Laar constants should stay the same
+irrespective of the temperature/mol fraction of the VLE for the same
+mixture components. However, there is a clear deviation in both
+\(a\:\&\:b\) once again proving thermodynamic inconsistency.
+
+\hypertarget{solve}{%
+  \section{Solve}\label{solve}}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{1}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+    \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+    \PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{LinearRegression}
+    \PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{interpolate}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{itemize}
+  \tightlist
+  \item
+        A = Acetone
+  \item
+        B = Benzene
+\end{itemize}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{2}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{rho\PYZus{}A} \PY{o}{=} \PY{l+m+mi}{729} \PY{c+c1}{\PYZsh{} kg/m\PYZca{}3}
+    \PY{n}{rho\PYZus{}B} \PY{o}{=} \PY{l+m+mi}{879} \PY{c+c1}{\PYZsh{} kg/m\PYZca{}3}
+
+    \PY{c+c1}{\PYZsh{} ? Molecular weight}
+    \PY{n}{M\PYZus{}A} \PY{o}{=} \PY{l+m+mf}{58.08} \PY{c+c1}{\PYZsh{} g/mol}
+    \PY{n}{M\PYZus{}B} \PY{o}{=} \PY{l+m+mf}{78.11} \PY{c+c1}{\PYZsh{} g/mol}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\hypertarget{calibration-curve}{%
+  \subsection{Calibration curve}\label{calibration-curve}}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{3}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{c+c1}{\PYZsh{} Volume ratio}
+    \PY{n}{VR} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{9}\PY{o}{/}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{8}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{7}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{6}\PY{o}{/}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{5}\PY{o}{/}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{4}\PY{o}{/}\PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{3}\PY{o}{/}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{2}\PY{o}{/}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{1}\PY{o}{/}\PY{l+m+mi}{9}\PY{p}{]}
+    \PY{n}{VR} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{VR}\PY{p}{)}
+    \PY{n}{VR} \PY{o}{=} \PY{n}{VR} \PY{o}{*} \PY{p}{(}\PY{n}{rho\PYZus{}A} \PY{o}{/} \PY{n}{M\PYZus{}A}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{rho\PYZus{}B} \PY{o}{/} \PY{n}{M\PYZus{}B}\PY{p}{)}
+    \PY{n}{VR\PYZus{}A} \PY{o}{=} \PY{p}{[}\PY{p}{(}\PY{n}{r} \PY{o}{/} \PY{p}{(}\PY{n}{r}\PY{o}{+}\PY{l+m+mf}{1.0}\PY{p}{)}\PY{p}{)} \PY{k}{for} \PY{n}{r} \PY{o+ow}{in} \PY{n}{VR}\PY{p}{]}
+    \PY{n}{VR\PYZus{}A} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{o}{*}\PY{n}{VR\PYZus{}A}\PY{p}{,} \PY{l+m+mf}{0.0}\PY{p}{]}
+
+    \PY{c+c1}{\PYZsh{} x = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]}
+    \PY{n}{x\PYZus{}A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{VR\PYZus{}A}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mole fraction of Acetone: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{x\PYZus{}A}\PY{p}{)}
+
+    \PY{n}{RI\PYZus{}1} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.351791}\PY{p}{,} \PY{l+m+mf}{1.364765}\PY{p}{,} \PY{l+m+mf}{1.38243}\PY{p}{,} \PY{l+m+mf}{1.400394}\PY{p}{,} \PY{l+m+mf}{1.416661}\PY{p}{,} \PY{l+m+mf}{1.437419}\PY{p}{,}
+    \PY{l+m+mf}{1.443108}\PY{p}{,} \PY{l+m+mf}{1.454685}\PY{p}{,} \PY{l+m+mf}{1.471052}\PY{p}{,} \PY{l+m+mf}{1.484525}\PY{p}{,} \PY{l+m+mf}{1.491711}\PY{p}{]}
+
+    \PY{n}{RI\PYZus{}2} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.351891}\PY{p}{,} \PY{l+m+mf}{1.364765}\PY{p}{,} \PY{l+m+mf}{1.382929}\PY{p}{,} \PY{l+m+mf}{1.399296}\PY{p}{,} \PY{l+m+mf}{1.415763}\PY{p}{,}
+    \PY{l+m+mf}{1.43732}\PY{p}{,} \PY{l+m+mf}{1.445004}\PY{p}{,} \PY{l+m+mf}{1.4472}\PY{p}{,} \PY{l+m+mf}{1.471551}\PY{p}{,} \PY{l+m+mf}{1.483427}\PY{p}{,} \PY{l+m+mf}{1.492709}\PY{p}{]}
+
+    \PY{n}{RI\PYZus{}3} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.351691}\PY{p}{,} \PY{l+m+mf}{1.364066}\PY{p}{,} \PY{l+m+mf}{1.383827}\PY{p}{,} \PY{l+m+mf}{1.400593}\PY{p}{,} \PY{l+m+mf}{1.417459}\PY{p}{,} \PY{l+m+mf}{1.440513}\PY{p}{,}
+    \PY{l+m+mf}{1.443607}\PY{p}{,} \PY{l+m+mf}{1.454884}\PY{p}{,} \PY{l+m+mf}{1.471351}\PY{p}{,} \PY{l+m+mf}{1.484425}\PY{p}{,} \PY{l+m+mf}{1.49201}\PY{p}{]}
+
+    \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{[}\PY{n}{RI\PYZus{}1}\PY{p}{,} \PY{n}{RI\PYZus{}2}\PY{p}{,} \PY{n}{RI\PYZus{}3}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  Mole fraction of Acetone:  [1.         0.90940653 0.81689935 0.72241717
+  0.62589606 0.5272693
+  0.42646723 0.32341707 0.21804277 0.11026481 0.        ]
+\end{Verbatim}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{4}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{reg} \PY{o}{=} \PY{n}{LinearRegression}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{x\PYZus{}A}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+    \PY{n}{m} \PY{o}{=} \PY{n}{reg}\PY{o}{.}\PY{n}{coef\PYZus{}}
+    \PY{n}{c} \PY{o}{=} \PY{n}{reg}\PY{o}{.}\PY{n}{intercept\PYZus{}}
+
+    \PY{n}{y\PYZus{}pred} \PY{o}{=} \PY{n}{m}\PY{o}{*}\PY{n}{x\PYZus{}A} \PY{o}{+} \PY{n}{c}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Refractive index vs mole fraction}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mole fraction of A (\PYZdl{}X\PYZus{}A\PYZdl{})}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Refractive index (RI)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x\PYZus{}A}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o\PYZhy{}k}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x\PYZus{}A}\PY{p}{,} \PY{n}{y\PYZus{}pred}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{slope: }\PY{l+s+si}{\PYZob{}}\PY{n}{reg}\PY{o}{.}\PY{n}{coef\PYZus{}}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{, intercept: }\PY{l+s+si}{\PYZob{}}\PY{n}{reg}\PY{o}{.}\PY{n}{intercept\PYZus{}}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  slope: [-0.14296434], intercept: 1.5009384465620594
+\end{Verbatim}
+
+\begin{center}
+  \adjustimage{max size={0.7\linewidth}{0.7\paperheight}}{output_6_1.png}
+\end{center}
+{ \hspace*{\fill} \\}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{5}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{T} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{58.2}\PY{p}{,} \PY{l+m+mf}{59.9}\PY{p}{,} \PY{l+m+mf}{60.8}\PY{p}{,} \PY{l+m+mf}{63.0}\PY{p}{,} \PY{l+m+mf}{65.2}\PY{p}{,} \PY{l+m+mf}{68.1}\PY{p}{]}
+    \PY{n}{T} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{T}\PY{p}{)}
+    \PY{n}{T} \PY{o}{+}\PY{o}{=} \PY{l+m+mf}{273.15}
+
+    \PY{n}{RI\PYZus{}vap\PYZus{}1} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.376541}\PY{p}{,} \PY{l+m+mf}{1.395104}\PY{p}{,} \PY{l+m+mf}{1.404485}\PY{p}{,} \PY{l+m+mf}{1.407679}\PY{p}{,} \PY{l+m+mf}{1.431531}\PY{p}{,} \PY{l+m+mf}{1.442809}\PY{p}{]}
+    \PY{n}{RI\PYZus{}vap\PYZus{}2} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.375044}\PY{p}{,} \PY{l+m+mf}{1.396002}\PY{p}{,} \PY{l+m+mf}{1.399895}\PY{p}{,} \PY{l+m+mf}{1.414266}\PY{p}{,} \PY{l+m+mf}{1.431831}\PY{p}{,} \PY{l+m+mf}{1.445703}\PY{p}{]}
+    \PY{n}{RI\PYZus{}vap\PYZus{}3} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.375344}\PY{p}{,} \PY{l+m+mf}{1.395803}\PY{p}{,} \PY{l+m+mf}{1.400693}\PY{p}{,} \PY{l+m+mf}{1.414665}\PY{p}{,} \PY{l+m+mf}{1.429635}\PY{p}{,} \PY{l+m+mf}{1.446701}\PY{p}{]}
+    \PY{n}{RI\PYZus{}vap} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{[}\PY{n}{RI\PYZus{}vap\PYZus{}1}\PY{p}{,} \PY{n}{RI\PYZus{}vap\PYZus{}2}\PY{p}{,} \PY{n}{RI\PYZus{}vap\PYZus{}3}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+    \PY{n}{Y\PYZus{}A} \PY{o}{=} \PY{p}{(}\PY{n}{RI\PYZus{}vap} \PY{o}{\PYZhy{}} \PY{n}{c}\PY{p}{)} \PY{o}{/} \PY{n}{m}
+    \PY{n}{Y\PYZus{}B} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}A}
+
+    \PY{n}{RI\PYZus{}liq\PYZus{}1} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.382729}\PY{p}{,} \PY{l+m+mf}{1.403787}\PY{p}{,} \PY{l+m+mf}{1.434326}\PY{p}{,} \PY{l+m+mf}{1.444006}\PY{p}{,} \PY{l+m+mf}{1.449495}\PY{p}{,} \PY{l+m+mf}{1.473048}\PY{p}{]}
+    \PY{n}{RI\PYZus{}liq\PYZus{}2} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.381831}\PY{p}{,} \PY{l+m+mf}{1.407579}\PY{p}{,} \PY{l+m+mf}{1.436621}\PY{p}{,} \PY{l+m+mf}{1.441611}\PY{p}{,} \PY{l+m+mf}{1.450194}\PY{p}{,} \PY{l+m+mf}{1.473747}\PY{p}{]}
+    \PY{n}{RI\PYZus{}liq\PYZus{}3} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.385324}\PY{p}{,} \PY{l+m+mf}{1.408178}\PY{p}{,} \PY{l+m+mf}{1.436222}\PY{p}{,} \PY{l+m+mf}{1.443507}\PY{p}{,} \PY{l+m+mf}{1.450793}\PY{p}{,} \PY{l+m+mf}{1.472649}\PY{p}{]}
+    \PY{n}{RI\PYZus{}liq} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{[}\PY{n}{RI\PYZus{}liq\PYZus{}1}\PY{p}{,} \PY{n}{RI\PYZus{}liq\PYZus{}2}\PY{p}{,} \PY{n}{RI\PYZus{}liq\PYZus{}3}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+    \PY{n}{X\PYZus{}A} \PY{o}{=} \PY{p}{(}\PY{n}{RI\PYZus{}liq} \PY{o}{\PYZhy{}} \PY{n}{c}\PY{p}{)} \PY{o}{/} \PY{n}{m}
+    \PY{n}{X\PYZus{}B} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{X\PYZus{}A}
+
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Average mole fraction of vapour A (at various temp):}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{Y\PYZus{}A}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Average mole fraction of liquid A (at various temp):}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{X\PYZus{}A}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  Average mole fraction of vapour A (at various temp): [0.87641051 0.73656211
+  0.69421122 0.62068006 0.48920905 0.3907789 ]
+  Average mole fraction of liquid A (at various temp): [0.822889   0.66047087
+  0.45616584 0.40497592 0.35517795 0.19438727]
+\end{Verbatim}
+
+\hypertarget{calculate-p_sat}{%
+  \subsection{\texorpdfstring{Calculate
+      \(P_{sat}\)}{Calculate P\_\{sat\}}}\label{calculate-p_sat}}
+
+\begin{itemize}
+  \tightlist
+  \item
+        Antoine Equation: \(log_{10}(P) = A − \frac{B}{T + C}\)
+\end{itemize}
+
+\hypertarget{acetone}{%
+  \subsubsection{Acetone}\label{acetone}}
+
+\begin{itemize}
+  \tightlist
+  \item
+        A = 4.42448
+  \item
+        B = 1312.253
+  \item
+        C = -32.445
+  \item
+        reference: \emph{Ambrose, Sprake, et al., 1974}
+\end{itemize}
+
+\hypertarget{benzene}{%
+  \subsubsection{Benzene}\label{benzene}}
+
+\begin{itemize}
+  \tightlist
+  \item
+        A = 4.725
+  \item
+        B = 1660.652
+  \item
+        C = -1.461
+  \item
+        reference: \emph{Eon, Pommier, et al., 1971}
+\end{itemize}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{6}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{log10\PYZus{}Psat\PYZus{}A} \PY{o}{=} \PY{l+m+mf}{4.424} \PY{o}{\PYZhy{}} \PY{l+m+mf}{1312.25} \PY{o}{/} \PY{p}{(}\PY{n}{T} \PY{o}{\PYZhy{}} \PY{l+m+mf}{32.44}\PY{p}{)}
+    \PY{n}{Psat\PYZus{}A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{power}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{log10\PYZus{}Psat\PYZus{}A}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Saturation pressure of Acetone:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{Psat\PYZus{}A}\PY{p}{)}
+
+    \PY{n}{log10\PYZus{}Psat\PYZus{}B} \PY{o}{=} \PY{l+m+mf}{4.725} \PY{o}{\PYZhy{}} \PY{l+m+mf}{1660.65} \PY{o}{/} \PY{p}{(}\PY{n}{T} \PY{o}{\PYZhy{}} \PY{l+m+mf}{1.46}\PY{p}{)}
+    \PY{n}{Psat\PYZus{}B} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{power}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{log10\PYZus{}Psat\PYZus{}B}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Saturation pressure of Benzene:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{Psat\PYZus{}B}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  Saturation pressure of Acetone: [1.08114159 1.14474676 1.17961343 1.26842971
+  1.36250982 1.49493862]
+  Saturation pressure of Benzene: [0.49096359 0.52102362 0.5375436  0.57975479
+  0.62466361 0.68820318]
+\end{Verbatim}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{7}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{gamma\PYZus{}A} \PY{o}{=} \PY{p}{(}\PY{n}{Y\PYZus{}A} \PY{o}{*} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{Psat\PYZus{}A} \PY{o}{*} \PY{n}{X\PYZus{}A}\PY{p}{)}
+    \PY{n}{ln\PYZus{}gamma\PYZus{}A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{gamma\PYZus{}A}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ln(gamma\PYZus{}A):}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ln\PYZus{}gamma\PYZus{}A}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Psat\PYZus{}B *= 1.3}
+    \PY{n}{gamma\PYZus{}B} \PY{o}{=} \PY{p}{(}\PY{n}{Y\PYZus{}B} \PY{o}{*} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{Psat\PYZus{}B} \PY{o}{*} \PY{n}{X\PYZus{}B}\PY{p}{)}
+    \PY{n}{ln\PYZus{}gamma\PYZus{}B} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{gamma\PYZus{}B}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ln(gamma\PYZus{}B):}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{ln\PYZus{}gamma\PYZus{}B}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  ln(gamma\_A): [-0.01500423 -0.0261429   0.25473305  0.18920846  0.01084251
+  0.2962044 ]
+  ln(gamma\_B): [0.35157418 0.39821779 0.04499565 0.09492817 0.23752803 0.09424926]
+\end{Verbatim}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{8}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{plt}\PY{o}{.}\PY{n}{axhline}\PY{p}{(}\PY{n}{y}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{X\PYZus{}A}\PY{p}{,} \PY{n}{ln\PYZus{}gamma\PYZus{}A}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o\PYZhy{}b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Acetone}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{X\PYZus{}A}\PY{p}{,} \PY{n}{ln\PYZus{}gamma\PYZus{}B}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o\PYZhy{}g}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Benzene}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mole fraction of Acetone}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZdl{})}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mole fraction of Acetone vs ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZdl{})}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{center}
+  \adjustimage{max size={0.7\linewidth}{0.7\paperheight}}{output_11_0.png}
+\end{center}
+{ \hspace*{\fill} \\}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{9}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{delta\PYZus{}ln\PYZus{}gamma} \PY{o}{=} \PY{n}{ln\PYZus{}gamma\PYZus{}A}\PY{o}{\PYZhy{}}\PY{n}{ln\PYZus{}gamma\PYZus{}B}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{axhline}\PY{p}{(}\PY{n}{y}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{X\PYZus{}A}\PY{p}{,} \PY{n}{delta\PYZus{}ln\PYZus{}gamma}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{o\PYZhy{}k}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mole fraction of Acetone}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZus{}A\PYZdl{}) \PYZhy{} ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZus{}B\PYZdl{})}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mole fraction of Acetone vs \PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{Delta\PYZdl{} ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZdl{})}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{fill\PYZus{}between}\PY{p}{(}\PY{n}{X\PYZus{}A}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{delta\PYZus{}ln\PYZus{}gamma}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{center}
+  \adjustimage{max size={0.7\linewidth}{0.7\paperheight}}{output_12_0.png}
+\end{center}
+{ \hspace*{\fill} \\}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{10}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{spline} \PY{o}{=} \PY{n}{interpolate}\PY{o}{.}\PY{n}{interp1d}\PY{p}{(}\PY{n}{X\PYZus{}A}\PY{p}{,} \PY{n}{delta\PYZus{}ln\PYZus{}gamma}\PY{p}{,} \PY{n}{kind}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cubic}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+    \PY{n}{x\PYZus{}inter} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{l+m+mf}{0.8}\PY{p}{,} \PY{l+m+mi}{300}\PY{p}{)}
+    \PY{n}{y\PYZus{}inter} \PY{o}{=} \PY{n}{spline}\PY{p}{(}\PY{n}{x\PYZus{}inter}\PY{p}{)}
+
+    \PY{n}{plt}\PY{o}{.}\PY{n}{axhline}\PY{p}{(}\PY{n}{y}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{k}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x\PYZus{}inter}\PY{p}{,} \PY{n}{y\PYZus{}inter}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}b}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mole fraction of Acetone vs \PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{Delta\PYZdl{} ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZdl{}) after spline interpolation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mole fraction of Acetone}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZus{}A\PYZdl{}) \PYZhy{} ln(\PYZdl{}}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{gamma\PYZus{}B\PYZdl{})}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{n}{area} \PY{o}{=} \PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{x\PYZus{}inter}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{area} \PY{o}{+}\PY{o}{=} \PY{p}{(}\PY{n}{y\PYZus{}inter}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{x\PYZus{}inter}\PY{p}{[}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{x\PYZus{}inter}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Area:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{area}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  Area: -0.14447233309865778
+\end{Verbatim}
+
+\begin{center}
+  \adjustimage{max size={0.7\linewidth}{0.7\paperheight}}{output_13_1.png}
+\end{center}
+{ \hspace*{\fill} \\}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{11}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{alpha} \PY{o}{=} \PY{p}{(}\PY{n}{X\PYZus{}B} \PY{o}{*} \PY{n}{ln\PYZus{}gamma\PYZus{}B}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{X\PYZus{}A} \PY{o}{*} \PY{n}{ln\PYZus{}gamma\PYZus{}A}\PY{p}{)}
+    \PY{n}{a} \PY{o}{=} \PY{n}{ln\PYZus{}gamma\PYZus{}A} \PY{o}{*} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{n}{alpha}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+    \PY{n}{b} \PY{o}{=} \PY{n}{ln\PYZus{}gamma\PYZus{}B} \PY{o}{*} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{l+m+mf}{1.0}\PY{o}{/}\PY{n}{alpha}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Van Laar coeffecients}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{a: }\PY{l+s+si}{\PYZob{}}\PY{n}{a}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{b: }\PY{l+s+si}{\PYZob{}}\PY{n}{b}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  Van Laar coeffecients
+  a: [-0.24528301 -1.21972077  0.37331584  0.57097702 18.02423931  1.5925    ]
+  b: [0.22597255 0.30300295 1.48697511 0.52717326 0.24962263 0.29139089]
+\end{Verbatim}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{12}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{residual} \PY{o}{=} \PY{n}{X\PYZus{}A} \PY{o}{*} \PY{n}{ln\PYZus{}gamma\PYZus{}A} \PY{o}{+} \PY{n}{X\PYZus{}B} \PY{o}{*} \PY{n}{ln\PYZus{}gamma\PYZus{}B}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Residual: }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{residual}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  Residual:  [0.04992084 0.11793991 0.14067069 0.13310942 0.15701433 0.13350677]
+\end{Verbatim}
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+  \prompt{In}{incolor}{13}{\boxspacing}
+  \begin{Verbatim}[commandchars=\\\{\}]
+    \PY{n}{K\PYZus{}A} \PY{o}{=} \PY{n}{Y\PYZus{}A} \PY{o}{/} \PY{n}{X\PYZus{}A}
+    \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K\PYZus{}A: }\PY{l+s+s2}{\PYZdq{}} \PY{p}{,} \PY{n}{K\PYZus{}A}\PY{p}{)}
+  \end{Verbatim}
+\end{tcolorbox}
+
+\begin{Verbatim}[commandchars=\\\{\}]
+  K\_A:  [1.06504098 1.11520756 1.52183956 1.5326345  1.37736322 2.01031122]
+\end{Verbatim}
+
+
+% Add a bibliography block to the postdoc
+
+
+
+\end{document}

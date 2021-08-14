@@ -1,4 +1,6 @@
 *.temp
+.virtual_documents
+.ipynb_checkpoints
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
